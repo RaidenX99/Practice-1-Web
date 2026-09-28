@@ -13,7 +13,7 @@ st.set_page_config(page_title="Практическая работа №1", layo
 
 def upload_to_google_drive(file_content, filename):
     try:
-        web_app_url = "https://script.google.com/macros/s/AKfycbx2d8pOl-bvdGMm8C75F315-IwZULvsgC-1PxJj4jwUXnuTzuUzSqQ8ZovwBaKpwJY6/exec"
+        web_app_url = "https://script.google.com/macros/s/AKfycbz1vmLYHt5hokqUyjDE4e5EHlxJSu1AWVgSDkImGFthz9Fgok2Yk4HlnsOZCTiF-6xm/exec"
         payload = {
             "filename": filename,
             "content": file_content,
