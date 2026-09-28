@@ -19,7 +19,7 @@ def upload_to_google_drive(file_content, filename):
             "content": file_content,
             "practice_num": "1"  # Передаем номер практики для маршрутизации в нужную папку
         }
-        response = requests.post(web_app_url, json=payload, timeout=15)
+        response = requests.post(web_app_url, json=payload, timeout=60)
         res_data = response.json()
         if res_data.get("status") == "success":
             return True
