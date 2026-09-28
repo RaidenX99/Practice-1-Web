@@ -15,7 +15,7 @@ if not st.session_state.admin_auth:
     st.info("Доступ только для преподавателя.")
     pwd = st.text_input("Введите секретный пароль доступа:", type="password")
     if st.button("Войти"):
-        if pwd == "12020109": 
+        if pwd == "admin2026": 
             st.session_state.admin_auth = True
             st.rerun()
         else:
@@ -38,19 +38,10 @@ else:
                 
                 decrypted_answers = {}
                 for k, v in encrypted_answers.items():
-                    if isinstance(v, list): # Распаковка массива фотографий
-                        decrypted_list = []
-                        for photo_v in v:
-                            try:
-                                decrypted_list.append(base64.b64decode(photo_v.encode('utf-8')).decode('utf-8')[::-1])
-                            except Exception:
-                                pass
-                        decrypted_answers[k] = decrypted_list
-                    else:
-                        try:
-                            decrypted_answers[k] = base64.b64decode(v.encode('utf-8')).decode('utf-8')[::-1]
-                        except Exception:
-                            decrypted_answers[k] = ""
+                    try:
+                        decrypted_answers[k] = base64.b64decode(v.encode('utf-8')).decode('utf-8')[::-1]
+                    except Exception:
+                        decrypted_answers[k] = ""
                         
                 engine = PracticeEngine(student_id)
                 expected_hash = engine.generate_security_hash(student_id, decrypted_answers)
@@ -80,15 +71,13 @@ else:
                                 task_num = task_key.split('_')[1]
                                 st.write(f"{status_emoji} **Задача {task_num}:** Ввел: `{details['student_answer']}` | Правильно: `{details['correct_answer']}`")
                             
-                            # Отображение всех фото из массива
-                            photo_b64_list = result.get('photos', {}).get(task_key)
-                            if photo_b64_list and isinstance(photo_b64_list, list):
-                                for idx, photo_b64 in enumerate(photo_b64_list):
-                                    try:
-                                        img_bytes = base64.b64decode(photo_b64)
-                                        st.image(img_bytes, caption=f"Фото решения {idx+1} (Задача {task_key.split('_')[1] if task_key != 'task_99' else 'Теория'})", width=500)
-                                    except:
-                                        st.error(f"Не удалось отобразить фото {idx+1}")
+                            photo_b64 = result.get('photos', {}).get(task_key)
+                            if photo_b64:
+                                try:
+                                    img_bytes = base64.b64decode(photo_b64)
+                                    st.image(img_bytes, caption=f"Фото решения (Задача {task_key.split('_')[1] if task_key != 'task_99' else 'Теория'})", width=500)
+                                except:
+                                    st.error("Не удалось отобразить фото")
                             st.write("---")
                             
             except Exception as e:
