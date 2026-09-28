@@ -42,7 +42,6 @@ class PracticeEngine:
         variant['task_19'] = self._task_19_mac()
         variant['task_20'] = self._task_20_antivirus()
         
-        # ПУЛ КОНТРОЛЬНЫХ ВОПРОСОВ (Комбинаторика и Вероятность)
         cq_pool = [
             "Что такое перестановка, размещение и сочетание? В чем их принципиальное отличие?",
             "Сформулируйте правила суммы и произведения в комбинаторике.",
@@ -71,8 +70,7 @@ class PracticeEngine:
 
     def _task_1_servers(self):
         type_choice = random.choice(['A', 'B'])
-        N = random.randint(15, 50)
-        K = random.randint(3, 7)
+        N, K = random.randint(15, 50), random.randint(3, 7)
         if type_choice == 'A':
             text = f"Системный администратор настраивает {K} различных ролей на {N} доступных серверах. Каждая роль назначается на отдельный сервер. Сколькими способами можно распределить роли?"
             ans = math.perm(N, K)
@@ -144,7 +142,7 @@ class PracticeEngine:
 
     def _task_12_audit(self):
         N1, N2 = random.randint(15, 30), random.randint(10, 20)
-        K, K1 = random.randint(4, 7), 0
+        K = random.randint(4, 7)
         K1 = random.randint(2, K-1)
         text = f"В партии {N1} трансиверов завода «А» и {N2} трансиверов завода «Б». Инженер наугад берет {K} штук. Какова вероятность, что среди них ровно {K1} завода «А» и {K-K1} завода «Б»?"
         ans = Fraction(math.comb(N1, K1) * math.comb(N2, K-K1), math.comb(N1+N2, K))
@@ -207,6 +205,7 @@ class PracticeEngine:
 
     @staticmethod
     def generate_security_hash(student_id: str, student_answers: dict) -> str:
+        # JSON dumps корректно обрабатывает списки фотографий внутри словаря
         answers_str = json.dumps(student_answers, sort_keys=True)
         raw_data = f"{student_id}_{answers_str}_{SECRET_SALT}"
         return hashlib.sha256(raw_data.encode('utf-8')).hexdigest()
@@ -218,7 +217,10 @@ class PracticeEngine:
         details = {}
 
         for task_key, task_data in variant.items():
-            has_photo = bool(student_answers.get(f"{task_key}_photo"))
+            # Если загружен хотя бы один файл (список не пуст) - True
+            photo_list = student_answers.get(f"{task_key}_photo", [])
+            has_photo = bool(photo_list)
+            
             student_ans_str = student_answers.get(task_key, "").strip()
             
             if task_key == 'task_99':
@@ -227,7 +229,7 @@ class PracticeEngine:
                     correct_count += 1
                     details[task_key] = {
                         'is_correct': True, 'correct_answer': "Фото прикреплено (Ожидает оценки)",
-                        'student_answer': f"Текст: {student_ans_str} + Фото" if student_ans_str else "Только фото"
+                        'student_answer': f"Текст: {student_ans_str} + Фото ({len(photo_list)} шт.)" if student_ans_str else f"Прикреплено фото ({len(photo_list)} шт.)"
                     }
                 else:
                     details[task_key] = {
