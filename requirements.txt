@@ -1,2 +1,5 @@
 streamlit
 Pillow
+plotly
+google-api-python-client
+google-auth
