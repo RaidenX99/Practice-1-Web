@@ -15,7 +15,7 @@ if not st.session_state.admin_auth:
     st.info("Доступ только для преподавателя.")
     pwd = st.text_input("Введите секретный пароль доступа:", type="password")
     if st.button("Войти"):
-        if pwd == "12020109: 
+        if pwd == "12020109": 
             st.session_state.admin_auth = True
             st.rerun()
         else:
